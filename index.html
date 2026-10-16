@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>仙先的曼谷旅遊手冊 | BKK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oswald:wght@500;700&display=swap");
+
+      body {
+        background-color: #e2e2e2;
+        font-family: "Noto Sans TC", sans-serif;
+        color: #1a1a1a;
+      }
+      .font-eng {
+        font-family: "Oswald", sans-serif;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* 每日行程次分頁切換動畫 */
+      .day-content {
+        display: none;
+        opacity: 0;
+      }
+      .day-content.active {
+        display: block;
+        animation: fade-in 0.4s forwards;
+      }
+      
+      /* 主分頁切換 */
+      .main-tab {
+        display: none;
+      }
+      .main-tab.active {
+        display: block;
+        animation: fade-in 0.3s forwards;
+      }
+
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .app-container {
+        max-width: 480px;
+        margin: 0 auto;
+        background-color: #e2e2e2;
+        min-height: 100vh;
+        border-left: 1px solid #d1d1d1;
+        border-right: 1px solid #d1d1d1;
+        position: relative;
+        padding-bottom: 80px; /* 給底部導覽列空間 */
+      }
+
+      /* Modal 樣式 */
+      .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        padding: 20px;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+      .modal-container {
+        background: #e2e2e2;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 16px;
+        padding: 24px;
+        animation: slide-up 0.3s forwards;
+        border: 1px solid #d1d1d1;
+      }
+      @keyframes slide-up {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      
+      <!-- 頂部標題區 (全域共用) -->
+      <header class="pt-6 pb-4 px-6 flex justify-between items-center bg-[#e2e2e2] shadow-sm sticky top-0 z-40 rounded-b-3xl border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gray-900 text-white flex items-center justify-center font-bold text-lg rounded-lg font-eng">
+            BKK
+          </div>
+          <div>
+            <h2 class="text-sm tracking-widest font-bold text-gray-800">
+              Happy 33❤️✨
+            </h2>
+            <p class="text-[11px] font-medium text-gray-500 tracking-wider">
+              曼谷慶生之旅
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- ================= 1. 行程分頁 (Itinerary) ================= -->
+      <div id="tab-itinerary" class="main-tab active">
+        <!-- 網格日期選擇器 -->
+        <div class="grid grid-cols-2 border-b border-gray-300 bg-[#e2e2e2]" id="tab-container">
+          <div class="day-btn active col-span-1 border-r border-b border-gray-300 p-4 cursor-pointer bg-[#1ea1e3] text-white" data-target="day1">
+            <div class="flex justify-between items-center pointer-events-none">
+              <span class="font-eng text-sm font-bold">DAY 1</span>
+              <span class="text-[10px] opacity-80">週六</span>
+            </div>
+            <div class="text-xs mt-1 pointer-events-none opacity-90">01.16</div>
+          </div>
+          <div class="day-btn col-span-1 border-b border-gray-300 p-4 cursor-pointer bg-[#e2e2e2] text-gray-900 hover:bg-gray-300" data-target="day2">
+            <div class="flex justify-between items-center pointer-events-none">
+              <span class="font-eng text-sm font-bold">DAY 2</span>
+              <span class="text-[10px] opacity-60">週日</span>
+            </div>
+            <div class="text-xs mt-1 pointer-events-none opacity-60">01.17</div>
+          </div>
+          <div class="day-btn col-span-1 border-r border-b border-gray-300 p-4 cursor-pointer bg-[#e2e2e2] text-gray-900 hover:bg-gray-300" data-target="day3">
+            <div class="flex justify-between items-center pointer-events-none">
+              <span class="font-eng text-sm font-bold">DAY 3</span>
+              <span class="text-[10px] opacity-60">週一</span>
+            </div>
+            <div class="text-xs mt-1 pointer-events-none opacity-60">01.18</div>
+          </div>
+          <div class="day-btn col-span-1 border-b border-gray-300 p-4 cursor-pointer bg-[#e2e2e2] text-gray-900 hover:bg-gray-300" data-target="day4">
+            <div class="flex justify-between items-center pointer-events-none">
+              <span class="font-eng text-sm font-bold">DAY 4</span>
+              <span class="text-[10px] opacity-60">週二</span>
+            </div>
+            <div class="text-xs mt-1 pointer-events-none opacity-60">01.19</div>
+          </div>
+          <div class="day-btn col-span-2 p-4 cursor-pointer bg-[#e2e2e2] text-gray-900 hover:bg-gray-300 border-b border-gray-300" data-target="day5">
+            <div class="flex justify-between items-center pointer-events-none">
+              <span class="font-eng text-sm font-bold">DAY 5</span>
+              <span class="text-[10px] opacity-60">週三</span>
+            </div>
+            <div class="text-xs mt-1 pointer-events-none opacity-60">01.20</div>
+          </div>
+        </div>
+
+        <!-- 摘要區塊 -->
+        <div class="bg-[#1ea1e3] text-white p-6 relative overflow-hidden shadow-sm">
+          <p id="summary-title" class="font-eng text-xs font-bold tracking-widest mb-2 opacity-90">DAY 1 / 01.16</p>
+          <h2 class="text-2xl font-bold leading-snug mb-2 tracking-wide">行程表</h2>
+          <p class="text-xs opacity-80"></p>
+          <div id="summary-num" class="absolute -bottom-6 -right-2 font-eng font-bold text-[100px] leading-none opacity-10">01</div>
+        </div>
+
+        <!-- 行程列表 -->
+        <main class="py-8 relative min-h-[300px]">
+          <div class="absolute left-[70px] top-10 bottom-10 w-[1px] bg-gray-400 z-0"></div>
+          
+          <div id="day1" class="day-content active z-10 relative">
+            <div id="timeline-day1"></div>
+          </div>
+          
+          <div id="day2" class="day-content z-10 relative">
+            <div id="timeline-day2"></div>
+          </div>
+          <div id="day3" class="day-content z-10 relative">
+            <div id="timeline-day3"></div>
+          </div>
+          <div id="day4" class="day-content z-10 relative">
+            <div id="timeline-day4"></div>
+          </div>
+          <div id="day5" class="day-content z-10 relative">
+            <div id="timeline-day5"></div>
+          </div>
+        </main>
+
+        <!-- 浮動新增按鈕 -->
+        <button onclick="openItineraryModal()" class="fixed bottom-[100px] right-[calc(50%-220px)] w-14 h-14 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-transform active:scale-95 z-40 border-4 border-sky-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        </button>
+      </div>
+
+      <!-- ================= 2. 記帳分頁 (Expenses) ================= -->
+      <div id="tab-expenses" class="main-tab px-6 py-6">
+        <h1 class="text-2xl font-bold tracking-widest mb-6 font-eng flex items-center gap-2">
+          <span class="text-[#1ea1e3]">🧾</span> EXPENSES
+        </h1>
+        
+        <!-- 總花費卡片 -->
+        <div class="bg-[#0f172a] text-white rounded-2xl p-6 mb-8 shadow-md relative overflow-hidden">
+          <p class="text-xs font-bold tracking-widest text-[#1ea1e3] mb-2 font-eng">TOTAL SPENT</p>
+          <div class="flex items-baseline gap-2">
+            <span class="text-2xl font-bold text-gray-400">฿</span>
+            <span id="expense-total" class="text-5xl font-bold font-eng tracking-tight">0</span>
+          </div>
+          <!-- 裝飾背景圖示 -->
+          <div class="absolute -bottom-4 -right-2 text-6xl opacity-10">💸</div>
+        </div>
+
+        <!-- 支出紀錄列表 -->
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-gray-800">支出紀錄</h3>
+          <button onclick="openModal('modal-add-expense')" class="text-[#1ea1e3] font-bold text-sm border border-[#1ea1e3] px-3 py-1.5 rounded-full hover:bg-gray-300 flex items-center gap-1 transition-colors">
+            <span>+</span> 新增
+          </button>
+        </div>
+
+        <div id="expense-list" class="space-y-3">
+          <!-- 空狀態 -->
+          <div id="expense-empty" class="border-2 border-dashed border-gray-400 rounded-xl p-8 text-center text-sm text-gray-500">
+            尚未新增任何支出。
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 3. 匯率分頁 (Exchange) ================= -->
+      <div id="tab-exchange" class="main-tab px-6 py-6">
+        <h1 class="text-2xl font-bold tracking-widest mb-6 font-eng flex items-center gap-2">
+          <span class="text-[#1ea1e3]">⇄</span> EXCHANGE
+        </h1>
+
+        <!-- 匯率卡片：藍色外框、灰色底 (#e2e2e2) -->
+        <div class="bg-[#e2e2e2] border-2 border-[#1ea1e3] rounded-2xl p-6 shadow-sm relative">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <h3 class="font-bold text-gray-800 text-lg">即時匯率換算</h3>
+              <p class="text-xs text-gray-500 mt-1">根據目的地自動設定，可點擊修改匯率</p>
+            </div>
+            <div class="bg-white border border-gray-300 px-2.5 py-1.5 rounded-md text-xs font-eng text-gray-700 flex items-center gap-1 shadow-sm">
+              Rate: 1 THB = <input type="number" id="exchange-rate" value="0.95" step="0.01" class="w-12 bg-transparent border-b border-gray-400 text-center px-1 text-gray-800 font-bold outline-none focus:border-[#1ea1e3]" /> TWD
+            </div>
+          </div>
+
+          <!-- THB Input -->
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-gray-600 mb-2">當地貨幣 (THB ฿)</label>
+            <div class="flex items-center border-2 border-gray-900 rounded-lg overflow-hidden shadow-sm bg-white">
+              <div class="bg-gray-900 text-white w-14 h-12 flex items-center justify-center font-eng font-bold text-xl">
+                ฿
+              </div>
+              <input type="number" id="input-thb" placeholder="0" class="flex-1 h-12 bg-transparent px-4 font-eng text-xl font-bold outline-none text-gray-800" />
+            </div>
+          </div>
+
+          <div class="flex justify-center my-4">
+            <div class="w-8 h-8 bg-[#1ea1e3] text-white rounded-full flex items-center justify-center shadow-md font-bold">
+              ↓
+            </div>
+          </div>
+
+          <!-- TWD Input -->
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-2">台幣 (TWD NT$)</label>
+            <div class="flex items-center border-2 border-gray-900 rounded-lg overflow-hidden shadow-sm bg-white">
+              <div class="bg-gray-900 text-white w-14 h-12 flex items-center justify-center font-eng font-bold text-sm">
+                NT$
+              </div>
+              <input type="number" id="input-twd" placeholder="0" class="flex-1 h-12 bg-transparent px-4 font-eng text-xl font-bold outline-none text-gray-800" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 底部導覽列 (Bottom Nav) ================= -->
+      <nav class="fixed bottom-0 w-full max-w-[480px] bg-[#e2e2e2] border-t border-gray-300 flex justify-around items-center h-[70px] z-50 pb-2">
+        <button class="nav-btn flex flex-col items-center gap-1 text-[#1ea1e3]" data-target="tab-itinerary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          <span class="text-[10px] font-bold">行程</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-500 hover:text-gray-900" data-target="tab-expenses">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+          <span class="text-[10px] font-bold">記帳</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-500 hover:text-gray-900" data-target="tab-exchange">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+          <span class="text-[10px] font-bold">匯率</span>
+        </button>
+      </nav>
+
+    </div>
+
+    <!-- ================= Modals 彈出視窗區 ================= -->
+    
+    <!-- 新增/編輯行程 Modal -->
+    <div id="modal-add-itinerary" class="modal-overlay">
+      <div class="modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h3 id="modal-itinerary-title" class="text-lg font-bold">新增行程</h3>
+          <button onclick="closeModal('modal-add-itinerary')" class="text-gray-500 hover:text-gray-900 font-bold">✕</button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">時間</label>
+            <input type="time" id="itinerary-time" class="w-full border border-gray-400 bg-[#e2e2e2] rounded-lg p-2 outline-none focus:border-[#1ea1e3]" value="10:00">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">行程標題</label>
+            <input type="text" id="itinerary-title" placeholder="例如：購物" class="w-full border border-gray-400 bg-[#e2e2e2] rounded-lg p-2 outline-none focus:border-[#1ea1e3]">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">備註 (選填)</label>
+            <input type="text" id="itinerary-desc" placeholder="例如：記得帶購物袋" class="w-full border border-gray-400 bg-[#e2e2e2] rounded-lg p-2 outline-none focus:border-[#1ea1e3]">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">注意事項 (選填)</label>
+            <input type="text" id="itinerary-warning" placeholder="例如：請留意隨身物品" class="w-full border border-gray-400 bg-[#e2e2e2] rounded-lg p-2 outline-none focus:border-[#1ea1e3]">
+          </div>
+          <button onclick="submitItinerary()" class="w-full bg-[#1ea1e3] text-white font-bold rounded-lg py-3 mt-2 hover:bg-blue-600 transition-colors">儲存行程</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新增記帳 Modal -->
+    <div id="modal-add-expense" class="modal-overlay">
+      <div class="modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold">新增支出</h3>
+          <button onclick="closeModal('modal-add-expense')" class="text-gray-500 hover:text-gray-900 font-bold">✕</button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">項目名稱</label>
+            <input type="text" id="expense-title" placeholder="例如：晚餐" class="w-full border border-gray-400 bg-[#e2e2e2] rounded-lg p-2 outline-none focus:border-[#1ea1e3]">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">金額 (THB)</label>
+            <input type="number" id="expense-amount" placeholder="0" class="w-full border border-gray-400 bg-[#e2e2e2] rounded-lg p-2 outline-none focus:border-[#1ea1e3] font-eng">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">這是誰的花費？</label>
+            <div class="flex gap-2">
+              <label class="flex-1 border border-gray-400 rounded-lg p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-300 transition-colors">
+                <input type="radio" name="expense-payer" value="仙" checked class="text-[#1ea1e3]">
+                <span class="font-bold">仙</span>
+              </label>
+              <label class="flex-1 border border-gray-400 rounded-lg p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-300 transition-colors">
+                <input type="radio" name="expense-payer" value="圈" class="text-[#1ea1e3]">
+                <span class="font-bold">圈</span>
+              </label>
+            </div>
+          </div>
+          <button onclick="submitExpense()" class="w-full bg-[#0f172a] text-white font-bold rounded-lg py-3 mt-2 hover:bg-gray-800 transition-colors">新增紀錄</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= JavaScript 邏輯 ================= -->
+    <script>
+      // ---- 全域狀態變數 ----
+      let currentDay = 'day1';
+      let editingItineraryId = null; 
+      
+      // 行程資料陣列
+      let itinerariesData = {
+        day1: [
+          { id: 1, time: '10:05', title: '搭機前往曼谷', desc: 'TPE → BKK (CI 831)', warning: '務必提早兩小時抵達機場' }
+        ],
+        day2: [],
+        day3: [],
+        day4: [],
+        day5: []
+      };
+
+      // 記帳資料陣列
+      let expensesData = []; 
+      let totalSpent = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        
+        // 初始渲染所有行程
+        renderItineraries();
+
+        // ---- 主分頁切換邏輯 (底部導覽列) ----
+        const navBtns = document.querySelectorAll(".nav-btn");
+        const mainTabs = document.querySelectorAll(".main-tab");
+        
+        navBtns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const targetId = btn.getAttribute("data-target");
+            
+            navBtns.forEach(b => {
+              b.classList.remove("text-[#1ea1e3]");
+              b.classList.add("text-gray-500");
+            });
+            btn.classList.add("text-[#1ea1e3]");
+            btn.classList.remove("text-gray-500");
+
+            mainTabs.forEach(tab => {
+              if (tab.id === targetId) tab.classList.add("active");
+              else tab.classList.remove("active");
+            });
+          });
+        });
+
+        // ---- 行程日期切換邏輯 ----
+        const dayBtns = document.querySelectorAll(".day-btn");
+        const dayContents = document.querySelectorAll(".day-content");
+        const summaryTitle = document.getElementById("summary-title");
+        const summaryNum = document.getElementById("summary-num");
+
+        const dayTitles = {
+          day1: { title: "DAY 1 / 01.16", num: "01" },
+          day2: { title: "DAY 2 / 01.17", num: "02" },
+          day3: { title: "DAY 3 / 01.18", num: "03" },
+          day4: { title: "DAY 4 / 01.19", num: "04" },
+          day5: { title: "DAY 5 / 01.20", num: "05" }
+        };
+
+        dayBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            currentDay = btn.getAttribute("data-target");
+
+            dayBtns.forEach(b => {
+              b.classList.remove("bg-[#1ea1e3]", "text-white", "active");
+              b.classList.add("bg-[#e2e2e2]", "text-gray-900", "hover:bg-gray-300");
+            });
+            btn.classList.remove("bg-[#e2e2e2]", "text-gray-900", "hover:bg-gray-300");
+            btn.classList.add("bg-[#1ea1e3]", "text-white", "active");
+
+            dayContents.forEach(content => {
+              if (content.id === currentDay) content.classList.add("active");
+              else content.classList.remove("active");
+            });
+
+            if (dayTitles[currentDay]) {
+              summaryTitle.textContent = dayTitles[currentDay].title;
+              summaryNum.textContent = dayTitles[currentDay].num;
+            }
+
+            renderItineraries();
+          });
+        });
+
+        // ---- 匯率換算邏輯 ----
+        const rateInput = document.getElementById('exchange-rate');
+        const thbInput = document.getElementById('input-thb');
+        const twdInput = document.getElementById('input-twd');
+
+        const calculateExchange = (source) => {
+          const rate = parseFloat(rateInput.value) || 0.95;
+          if (source === 'thb') {
+            const thb = parseFloat(thbInput.value) || 0;
+            twdInput.value = Math.round(thb * rate);
+          } else if (source === 'twd') {
+            const twd = parseFloat(twdInput.value) || 0;
+            thbInput.value = Math.round(twd / rate);
+          } else if (source === 'rate') {
+            if(thbInput.value) calculateExchange('thb');
+          }
+        };
+
+        thbInput.addEventListener('input', () => calculateExchange('thb'));
+        twdInput.addEventListener('input', () => calculateExchange('twd'));
+        rateInput.addEventListener('input', () => calculateExchange('rate'));
+
+      });
+
+      // ---- Modal 控制邏輯 ----
+      function openModal(id) {
+        document.getElementById(id).classList.add('active');
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+        if(id === 'modal-add-expense'){
+          document.getElementById('expense-title').value = '';
+          document.getElementById('expense-amount').value = '';
+        }
+      }
+
+      // ---- 行程渲染與邏輯 ----
+      function renderItineraries() {
+        const container = document.getElementById(`timeline-${currentDay}`);
+        container.innerHTML = '';
+        
+        const data = itinerariesData[currentDay];
+        
+        if (data.length === 0) {
+          container.innerHTML = `
+            <div class="pl-[100px] pr-4 mt-6">
+              <div class="border-l-2 border-gray-400 pl-4 py-2 text-xs text-gray-500">目前沒有行程，點擊右下角新增。</div>
+            </div>`;
+        } else {
+          data.forEach(item => {
+            container.innerHTML += `
+              <div class="flex px-4 mb-8 group animate-[fade-in_0.3s_ease-out]">
+                <div class="w-[50px] pt-1 font-eng font-bold text-[14px] text-gray-900">${item.time}</div>
+                <div class="relative w-10 flex justify-center">
+                  <div class="w-4 h-4 bg-[#1ea1e3] rounded-full mt-1.5 shadow-[0_0_0_4px_#e2e2e2] z-10"></div>
+                </div>
+                <div class="flex-1 pb-4 border-b border-gray-300">
+                  <div class="flex justify-between items-start">
+                    <h3 class="text-lg font-bold mb-1 text-gray-800">${item.title}</h3>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onclick="openItineraryModal(${item.id})" class="text-xs text-[#1ea1e3] font-bold">編輯</button>
+                      <button onclick="deleteItinerary(${item.id})" class="text-xs text-red-500 font-bold">刪除</button>
+                    </div>
+                  </div>
+                  ${item.desc ? `<p class="text-xs text-gray-600 mb-1">${item.desc}</p>` : ''}
+                  ${item.warning ? `<p class="text-xs text-red-500 font-bold mt-2">⚠️ ${item.warning}</p>` : ''}
+                </div>
+              </div>
+            `;
+          });
+          
+          container.innerHTML += `
+            <div class="pl-[100px] pr-4 mt-6">
+              <div class="border-l-2 border-gray-400 pl-4 py-2 text-xs text-gray-500">目前沒有更多行程，點擊右下角新增。</div>
+            </div>`;
+        }
+      }
+
+      function openItineraryModal(id = null) {
+        editingItineraryId = id;
+        const modalTitle = document.getElementById('modal-itinerary-title');
+        
+        if (id) {
+          modalTitle.textContent = '編輯行程';
+          const item = itinerariesData[currentDay].find(i => i.id === id);
+          document.getElementById('itinerary-time').value = item.time;
+          document.getElementById('itinerary-title').value = item.title;
+          document.getElementById('itinerary-desc').value = item.desc || '';
+          document.getElementById('itinerary-warning').value = item.warning || '';
+        } else {
+          modalTitle.textContent = '新增行程';
+          document.getElementById('itinerary-time').value = '10:00';
+          document.getElementById('itinerary-title').value = '';
+          document.getElementById('itinerary-desc').value = '';
+          document.getElementById('itinerary-warning').value = '';
+        }
+        openModal('modal-add-itinerary');
+      }
+
+      function submitItinerary() {
+        const time = document.getElementById('itinerary-time').value;
+        const title = document.getElementById('itinerary-title').value;
+        const desc = document.getElementById('itinerary-desc').value;
+        const warning = document.getElementById('itinerary-warning').value;
+
+        if(!title) { alert('請輸入行程標題'); return; }
+
+        if (editingItineraryId) {
+          // 更新模式
+          const item = itinerariesData[currentDay].find(i => i.id === editingItineraryId);
+          item.time = time;
+          item.title = title;
+          item.desc = desc;
+          item.warning = warning;
+        } else {
+          // 新增模式
+          itinerariesData[currentDay].push({
+            id: Date.now(),
+            time, title, desc, warning
+          });
+        }
+        
+        // 依照時間排序
+        itinerariesData[currentDay].sort((a, b) => a.time.localeCompare(b.time));
+        
+        renderItineraries();
+        closeModal('modal-add-itinerary');
+      }
+
+      function deleteItinerary(id) {
+        if(confirm('確定要刪除此行程嗎？')) {
+          itinerariesData[currentDay] = itinerariesData[currentDay].filter(item => item.id !== id);
+          renderItineraries();
+        }
+      }
+
+      // ---- 新增記帳邏輯 ----
+      function submitExpense() {
+        const title = document.getElementById('expense-title').value;
+        const amount = parseFloat(document.getElementById('expense-amount').value);
+        const payer = document.querySelector('input[name="expense-payer"]:checked').value;
+
+        if(!title || isNaN(amount) || amount <= 0) { alert('請填寫正確的項目與金額'); return; }
+
+        totalSpent += amount;
+        expensesData.push({ title, amount, payer, id: Date.now() });
+
+        updateExpenseUI();
+        closeModal('modal-add-expense');
+      }
+
+      function deleteExpense(id, amount) {
+        totalSpent -= amount;
+        expensesData = expensesData.filter(item => item.id !== id);
+        updateExpenseUI();
+      }
+
+      function updateExpenseUI() {
+        document.getElementById('expense-total').textContent = totalSpent.toLocaleString();
+
+        const listContainer = document.getElementById('expense-list');
+        if (expensesData.length === 0) {
+          listContainer.innerHTML = `
+            <div id="expense-empty" class="border-2 border-dashed border-gray-400 rounded-xl p-8 text-center text-sm text-gray-500">
+              尚未新增任何支出，資料即時同步。
+            </div>`;
+          return;
+        }
+
+        listContainer.innerHTML = '';
+        [...expensesData].reverse().forEach(item => {
+          listContainer.innerHTML += `
+            <div class="bg-[#e2e2e2] p-4 rounded-xl shadow-sm border border-gray-400 flex justify-between items-center group">
+              <div class="flex items-center gap-3">
+                <div>
+                  <h4 class="font-bold text-gray-800">${item.title}</h4>
+                  <div class="flex items-center mt-1">
+                    <span class="text-[10px] px-2 py-0.5 rounded font-bold border border-gray-500 text-gray-600">${item.payer} 的花費</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-eng font-bold text-lg text-gray-900">฿ ${item.amount}</p>
+                <button onclick="deleteExpense(${item.id}, ${item.amount})" class="text-[10px] text-red-500 opacity-0 group-hover:opacity-100 transition-opacity mt-1">刪除</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+    </script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCt4w10N7VORQPvPoQeRw9N4873CZtH37I",
+        authDomain: "ally-s-pta.firebaseapp.com",
+        projectId: "ally-s-pta",
+        storageBucket: "ally-s-pta.firebasestorage.app",
+        messagingSenderId: "793827706254",
+        appId: "1:793827706254:web:381203c86afd3a126410df",
+        measurementId: "G-WBL6ZBP6GS"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
+  </body>
+</html>
